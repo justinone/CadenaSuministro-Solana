@@ -1,60 +1,103 @@
-# Biblioteca en Solana
+# Cadena de Suministro en Solana
+README
 
-![banner](./images/banner-biblioteca.jpg)
+---------------Estructura CRUD----------------------------------------------------------------------------------------
 
-CRUD básico de un Solana Program desarrollado con Rust y Anchor desde el Solana Playground. 
+-----CREATE
+Instruccion: Crear Tienda
 
-Puedes comenzar dándole Fork a este repositorio (abajo te explicamos como 👇), **hemos preparado un entorno de codespaces listo para que no tengas que instalar nada**, solo déjate llevar por la fluidez de los ejercicios y temas desarrollados especialmente para ti. 
+    Permite la creacion de una PDA (Program Derived Adress), un tipo especial de cuenta en solana que permite prescindir 
+    del uso de llaves privadas para la firma de transacciones. 
 
-Asegúrate de clonar este repositorio a tu cuenta usando el botón **`Fork`**.
+    Esta cuenta contendra el objeto (struct) de tipo Tienda donde podremos almacenar los Libros. 
+    La creacion de la PDA depende de 3 cosas:
+        * Wallet address 
+        * Program ID 
+        * string representativo, regularmente relacionado con el nombre del proyecto
+    
+    La explicacion de esto continua en el struct NuevaTienda
 
-![fork](./images/fork.png)
+    Parametros de entrada:
+        * nombre -> nombre de la tienda -> tipo string
 
-## Importando el proyecto 
 
-Ya con el repositorio en tu cuenta lo siguiente que debes hacer copiar el `enlace de tu repositorio`, lo que se puede hacer directamente desdel navegador:
 
-![repo](./images/repo.png)
-Posteriormente, lo uniremos con el siguiente enlace en nuestro navegador de preferencia:
+Instruccion: Agregar Articulo
 
-```url
-https://beta.solpg.io/
-```
+    Agrega un articulo al vector de articulos Contenido en el struct Tienda. 
+    En este caso el contexto empleado es el struct NuevoArticulo. Mientras que NuevaTienda permite crear 
+    Instancias de una Tienda. NuevoArticulo permite crear y modificar los valores relacionados a cualquier
+    struct de tipo Articulo.
 
-Lo que nos dará algo parecido a:
+    Parametros de entrada:
+        * nombre -> nombre del articulo -> string
+        * cantidad -> numero de cantidad del articulo -> u16
 
-![url](./images/url.png)
 
-Al pulsar enter seremos enviados al `Solana Playground` con nuestro proyecto abierto:
+-----READ
+Instruccion: Ver Libros
 
-![pg](./images/pg.png)
+    Muestra en el log de la transaccion el contenido completo del vector de articulos de la Tienda
 
-Para guardarlo solo damos clic en el boton `import` y asignamos un nombre:
+    Parametros de entrada:
+        Ninguno
 
-![import](./images/import.png)
 
-## Preparacion del entorno
+-----UPDATE    
+Instruccion: Alternar Estado
+    /* 
+    Cambia el estado de disponible de false a true o de true a false.
 
-Primero conectaremos el entorno con la devnet, lo que tambien procederá a la creación de una wallet. Para eso daremos clic en donde dice **Not Conected**:
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     */
 
-![playground1](./images/playground1.png)
 
-Saldrá la siguiente ventana donde daremos en el botón **Continue**:
+-----DELETE
+    Instruccion: Eliminar Articulo
+    /*
+    Elimina un articulo apartir de su nombre. Error si articulo no existe, Error si vector vacio. 
 
-![wallet](./images/wallet.png)
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     */
 
-Como resultado se mostrará la siguiente información:
 
-![status](./images/status.png)
 
-* En verde: el estado de la conexión y el entorno al que se encuentra conectado
+-----STRUCT
+-Especifica que el struct es una cuenta que se almacenara en la blockchain
+#[account]
+Struct interno o secundario (No es una cuenta). Se define por derive y cuenta con los siguientes atributos:
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace, PartialEq, Debug)]
 
-* En amarillo: la la dirección de la wallet conectada
+    * AnchorSerialize -> Permite guardar el struct en la cuenta 
+    * AnchorDeserialize -> Permite leer su contenido desde la cuenta 
+    * Clone -> Para copiar su contenido o valores 
+    * InitSpace -> Calcula el tamaño necesario para ser almacenado en la blockchain
+    * PartialEq -> Para usar sus valores y compararlos con "=="
+    * Debug -> Para mostrarlo en log con ":?" o ":#?"
 
-* En azul: la cantidad de tokens en la wallet
 
-> ℹ️ ¿Quieres ver el ejemplo de un "Hola Mundo" en Solana?. Da clic aquí: 👉 [Ver Ejemplo](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/build-deploy)
+-----CONTEXT
+-Creacion de los contextos para las instrucciones (funciones)
+#[derive(Accounts)] // Especifica que este struct describe las cuentas que se requieren para determinada instruccion
 
-> ℹ️ ¿Cuentas con una Wallet de [Phantom](https://phantom.com/) que deseas importar?, Da clic aquí para ver como hacerlo: 
 
-👉 [Como Importar una Wallet](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/import-key-a-playground)
+
+
+---------------Estructura PDA-----------------------------------------------------------------------------------------
+
+    #[account(
+        init, // Inidica que al llamar la instruccuion se creara una cuenta
+        // puede ser remplazado por "init_if_needed" para que solo se cree una vez por caller
+        payer = owner, // Se especifica que quien paga el llamado a la instruccion, en este caso llama la instruccion 
+        space = Tienda::INIT_SPACE + 8, // Se calcula el espacio requerido para almacenar el Solana Program On-Chain
+        seeds = [b"tienda", owner.key().as_ref()], // Se especifica que la cuenta es una PDA que depende de un string y el id del owner
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+
+-Contexto para la creacion y modificacion de articulos 
+Especifica que este struct se requiere para todas las instrucciones relacionadas con la creacion o modificacion de Articulo
+#[derive(Accounts)]
