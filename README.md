@@ -1,5 +1,6 @@
 
-PROYECTO PARA CERTIFICACIÓN
+
+#PROYECTO PARA CERTIFICACIÓN
 
 Nombre: Cadena de Sumnistro V1.0
 
@@ -15,7 +16,7 @@ Requisitos:
 
 ---------------Estructura CRUD----------------------------------------------------------------------------------------
 
------CREATE
+#-----CREATE
 
 Instruccion: Crear Tienda
 
@@ -47,7 +48,7 @@ Instruccion: Agregar Articulo
         * cantidad -> numero de cantidad del articulo -> u16
 
 
------READ
+#-----READ
 
 Instruccion: Ver Libros
 
@@ -57,7 +58,7 @@ Instruccion: Ver Libros
         Ninguno
 
 
------UPDATE
+#-----UPDATE
 
 Instruccion: cambiar Fecha
      
@@ -98,7 +99,7 @@ Instruccion: Alternar Estado
     
 
 
------DELETE
+#-----DELETE
 
     Instruccion: Eliminar Articulo
     /*
@@ -110,12 +111,12 @@ Instruccion: Alternar Estado
 
 
 
------STRUCT
+#-----STRUCT
 
 -Especifica que el struct es una cuenta que se almacenara en la blockchain
-#[account]
+[account]
 Struct interno o secundario (No es una cuenta). Se define por derive y cuenta con los siguientes atributos:
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace, PartialEq, Debug)]
+[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace, PartialEq, Debug)]
 
     * AnchorSerialize -> Permite guardar el struct en la cuenta 
     * AnchorDeserialize -> Permite leer su contenido desde la cuenta 
@@ -125,10 +126,11 @@ Struct interno o secundario (No es una cuenta). Se define por derive y cuenta co
     * Debug -> Para mostrarlo en log con ":?" o ":#?"
 
 
------CONTEXT
+
+#-----CONTEXT
 
 -Creacion de los contextos para las instrucciones (funciones)
-#[derive(Accounts)] // Especifica que este struct describe las cuentas que se requieren para determinada instruccion
+[derive(Accounts)] // Especifica que este struct describe las cuentas que se requieren para determinada instruccion
 
 
 ---------------Estructura PDA-----------------------------------------------------------------------------------------
@@ -145,7 +147,7 @@ Struct interno o secundario (No es una cuenta). Se define por derive y cuenta co
 
 -Contexto para la creacion y modificacion de articulos 
 Especifica que este struct se requiere para todas las instrucciones relacionadas con la creacion o modificacion de Articulo
-#[derive(Accounts)]
+[derive(Accounts)]
 
 
 
