@@ -154,3 +154,10 @@ Especifica que este struct se requiere para todas las instrucciones relacionadas
 ----------------------
 TOTAL gastado: 7.267606 SOL
 ----------------------
+
+## RESULTADO
+
+![Tienda](./images/programav2_CadenaSuministro-Tienda.png)
+
+
+
