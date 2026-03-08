@@ -1,9 +1,22 @@
-# Cadena de Suministro en Solana
+
+PROYECTO PARA CERTIFICACIÓN
+
+Nombre: Cadena de Sumnistro V1.0
+
+Objetivo: Inventario simple para tiendas
+
+Requisitos:
+    1. Código en rust con estructura CRUD + PDA
+    2. Repositorio público en Git
+    3. Documentación: README.md y comentarios en el código
+    
+
 README
 
 ---------------Estructura CRUD----------------------------------------------------------------------------------------
 
 -----CREATE
+
 Instruccion: Crear Tienda
 
     Permite la creacion de una PDA (Program Derived Adress), un tipo especial de cuenta en solana que permite prescindir 
@@ -35,6 +48,7 @@ Instruccion: Agregar Articulo
 
 
 -----READ
+
 Instruccion: Ver Libros
 
     Muestra en el log de la transaccion el contenido completo del vector de articulos de la Tienda
@@ -43,17 +57,49 @@ Instruccion: Ver Libros
         Ninguno
 
 
------UPDATE    
+-----UPDATE
+
+Instruccion: cambiar Fecha
+     
+    Cambia la fecha registrada
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     
+
+Instruccion: cambiar Lugar
+     
+    Cambia el lugar registrado
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+
+Instruccion: cambiar cantidad
+    
+    Cambia la cantidad del articulo seleccionado
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+
+Instruccion: cambiar precio
+    
+    Cambia el precio del articulo seleccionado
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+    
+
 Instruccion: Alternar Estado
-    /* 
+     
     Cambia el estado de disponible de false a true o de true a false.
 
     Parametros de entrada:
         * nombre -> Nombre del articulo -> string
-     */
+    
 
 
 -----DELETE
+
     Instruccion: Eliminar Articulo
     /*
     Elimina un articulo apartir de su nombre. Error si articulo no existe, Error si vector vacio. 
@@ -65,6 +111,7 @@ Instruccion: Alternar Estado
 
 
 -----STRUCT
+
 -Especifica que el struct es una cuenta que se almacenara en la blockchain
 #[account]
 Struct interno o secundario (No es una cuenta). Se define por derive y cuenta con los siguientes atributos:
@@ -79,16 +126,15 @@ Struct interno o secundario (No es una cuenta). Se define por derive y cuenta co
 
 
 -----CONTEXT
+
 -Creacion de los contextos para las instrucciones (funciones)
 #[derive(Accounts)] // Especifica que este struct describe las cuentas que se requieren para determinada instruccion
-
-
 
 
 ---------------Estructura PDA-----------------------------------------------------------------------------------------
 
     #[account(
-        init, // Inidica que al llamar la instruccuion se creara una cuenta
+        init, // Indica que al llamar la instruccuion se creara una cuenta
         // puede ser remplazado por "init_if_needed" para que solo se cree una vez por caller
         payer = owner, // Se especifica que quien paga el llamado a la instruccion, en este caso llama la instruccion 
         space = Tienda::INIT_SPACE + 8, // Se calcula el espacio requerido para almacenar el Solana Program On-Chain
@@ -97,7 +143,12 @@ Struct interno o secundario (No es una cuenta). Se define por derive y cuenta co
 ----------------------------------------------------------------------------------------------------------------------
 
 
-
 -Contexto para la creacion y modificacion de articulos 
 Especifica que este struct se requiere para todas las instrucciones relacionadas con la creacion o modificacion de Articulo
 #[derive(Accounts)]
+
+
+
+----------------------
+TOTAL gastado: 7.267606 SOL
+----------------------
