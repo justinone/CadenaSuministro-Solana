@@ -159,5 +159,40 @@ TOTAL gastado: 7.267606 SOL
 
 ![Tienda](./images/programav2_CadenaSuministro-Tienda.png)
 
+# Instrucción: crear Tienda
 
+![Tienda](./images/programa_v2_crearTienda.png)
 
+# Instruccion: agregar Articulo
+
+![Tienda](./images/programa_v2_agregarArticulo.png)
+
+# Instruccion: ver Articulos
+
+![Tienda](./images/programa_v2_verArticulos1.png)
+![Tienda](./images/programa_v2_verArticulos2.png)
+
+# Instruccion: cambiar Fecha
+
+![Tienda](./images/programa_v2_cambiarFecha.png)
+![Tienda](./images/programa_v2_verArticulo2_cambiodefecha.png)
+
+# Instruccion: cambiar Lugar
+
+![Tienda](./images/programa_v2_cambiarLugar1.png)
+![Tienda](./images/programa_v2_verArticulos1b.png)
+ 
+# Instruccion: cambiar cantidad
+
+![Tienda](./images/programa_v2_cambiarCantidad2.png)
+![Tienda](./images/programa_v2_verArticulos2b.png)
+
+# Instruccion: cambiar precio
+    
+![Tienda](./images/programa_v2_cambiarPrecio_alternarEstado.png)
+![Tienda](./images/programa_v2_verArticulos2c.png)
+
+# Instruccion: eliminar Articulo
+
+![Tienda](./images/programa_v2_eliminarArticulo.png)
+![Tienda](./images/programa_v2_verArticulos1c.png)
