@@ -1,6 +1,6 @@
 
 
-#PROYECTO PARA CERTIFICACIÓN
+# PROYECTO PARA CERTIFICACIÓN
 
 Nombre: Cadena de Sumnistro V1.0
 
@@ -16,7 +16,7 @@ Requisitos:
 
 ---------------Estructura CRUD----------------------------------------------------------------------------------------
 
-#-----CREATE
+## -----CREATE
 
 Instruccion: Crear Tienda
 
