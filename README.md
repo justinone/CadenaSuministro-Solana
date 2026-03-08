@@ -14,9 +14,9 @@ Requisitos:
 3. Documentación: README y comentarios en el código
     
 
----------------Estructura CRUD----------------------------------------------------------------------------------------
+## Estructura CRUD----------------------------------------------------------------------------------------
 
-## -----CREATE
+## CREATE
 
 Instruccion: Crear Tienda
 
@@ -48,7 +48,7 @@ Instruccion: Agregar Articulo
         * cantidad -> numero de cantidad del articulo -> u16
 
 
-#-----READ
+## READ
 
 Instruccion: Ver Libros
 
@@ -58,7 +58,7 @@ Instruccion: Ver Libros
         Ninguno
 
 
-#-----UPDATE
+## UPDATE
 
 Instruccion: cambiar Fecha
      
@@ -99,7 +99,7 @@ Instruccion: Alternar Estado
     
 
 
-#-----DELETE
+## DELETE
 
     Instruccion: Eliminar Articulo
     /*
@@ -111,7 +111,7 @@ Instruccion: Alternar Estado
 
 
 
-#-----STRUCT
+# STRUCT
 
 -Especifica que el struct es una cuenta que se almacenara en la blockchain
 [account]
@@ -127,7 +127,7 @@ Struct interno o secundario (No es una cuenta). Se define por derive y cuenta co
 
 
 
-#-----CONTEXT
+# CONTEXT
 
 -Creacion de los contextos para las instrucciones (funciones)
 [derive(Accounts)] // Especifica que este struct describe las cuentas que se requieren para determinada instruccion
