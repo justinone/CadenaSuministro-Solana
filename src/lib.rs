@@ -1,146 +1,283 @@
 use anchor_lang::prelude::*;
-// ID del Solana Program, este espacio se llena automaticamente al haver el "build"
-declare_id!("");
+// ID del Solana Program, este espacio se llena automaticamente al hacer "build"
+declare_id!("HVq1Vb58wiuwxQfsVqWSTZpMMPq8a6HEJjJxxNJggCRn");
 
-#[program] // Macro que convierte codigo de Rust a Solana. Apartir de aqui empieza tu codigo!
-pub mod biblioteca {
+#[program] // Macro que convierte codigo de Rust a Solana.
+pub mod tienda {
     use super::*; // Importa todas los structs y enums definidos fuera del modulo
 
-    //////////////////////////// Instruccion: Crear Biblioteca /////////////////////////////////////
+
+//CREATE
+    //////////////////////////// Instruccion: Crear Tienda /////////////////////////////////////
     /*
     Permite la creacion de una PDA (Program Derived Adress), un tipo especial de cuenta en solana que permite prescindir 
     del uso de llaves privadas para la firma de transacciones. 
 
-    Esta cuenta contendra el objeto (struct) de tipo Biblioteca donde podremos almacenar los Libros. 
+    Esta cuenta contendra el objeto (struct) de tipo Tienda donde podremos almacenar los Articulos. 
     La creacion de la PDA depende de 3 cosas:
         * Wallet address 
         * Program ID 
         * string representativo, regularmente relacionado con el nombre del proyecto
     
-    La explicacion de esto continua en el struct NuevaBiblioteca
+    La explicacion de esto continua en el struct NuevaTienda
 
     Parametros de entrada:
-        * nombre -> nombre de la biblioteca -> tipo string
+        * nombre -> nombre de la tienda -> tipo string
      */
-    pub fn crear_biblioteca(context: Context<NuevaBiblioteca>, nombre: String) -> Result<()> {
+    pub fn crear_tienda(context: Context<NuevaTienda>, nombre: String) -> Result<()> {
         // "Context" siempre suele ir como primer parametro, ya que permite acceder al objeto o cuenta con el que queremos interactuar
         // Dentro del context va al tipo de objeto o cuenta con el que deseamos interactuar. 
         let owner_id = context.accounts.owner.key(); // Accedemos al wallet address del caller 
         msg!("Owner id: {}", owner_id); // Print de verificacion
 
-        let libros: Vec<Libro> = Vec::new(); // Crea un vector vacio 
+        let articulos: Vec<Articulo> = Vec::new(); // Crea un vector vacio 
 
-        // Creamos un Struct de tipo biblioteca y lo guardamos directamente 
-        context.accounts.biblioteca.set_inner(Biblioteca { 
+        // Creamos un Struct de tipo tienda y lo guardamos directamente 
+        context.accounts.tienda.set_inner(Tienda { 
             owner: owner_id,
             nombre,
-            libros,
+            articulos,
         });
         Ok(()) // Representa una transaccion exitosa 
     }
 
-    //////////////////////////// Instruccion: Agregar Libro /////////////////////////////////////
+
+    //////////////////////////// Instruccion: Agregar Articulo /////////////////////////////////////
     /*
-    Agrega un libro al vector de libros ontenido en el struct Biblioteca. 
-    En este caso el contexto empleado es el struct NuevoLibro. Mientras que NuevaBiblioteca permite crear 
-    Instancias de una Biblioteca. NuevoLibro permite crear y modificar los valores relacionados a cualquier
-    struct de tipo Libro.
+    Agrega un articulo al vector de articulos Contenido en el struct Tienda. 
+    En este caso el contexto empleado es el struct NuevoArticulo. Mientras que NuevaTienda permite crear 
+    Instancias de una Tienda. NuevoArticulo permite crear y modificar los valores relacionados a cualquier
+    struct de tipo Articulo.
 
     Parametros de entrada:
-        * nombre -> nombre del libro -> string
-        * paginas -> numero de paginas del libro -> u16
+        * nombre -> nombre del articulo -> string
+        * cantidad -> numero de cantidad del articulo -> u16
      */ 
-    pub fn agregar_libro(context: Context<NuevoLibro>, nombre: String, paginas: u16) -> Result<()> {
-        require!( // Medida de seguridad para identificar que SOLO el owner de la biblioteca sea el que hace cambios en ella
-            context.accounts.biblioteca.owner == context.accounts.owner.key(), // Condicion, true -> continua, false -> error
+    pub fn agregar_articulo(context: Context<NuevoArticulo>, nombre: String, fecha: String, lugar: String, cantidad: u16, precio: u16) -> Result<()> {
+        require!( // Medida de seguridad para identificar que SOLO el owner de la tienda sea el que hace cambios en ella
+            context.accounts.tienda.owner == context.accounts.owner.key(), // Condicion, true -> continua, false -> error
             Errores::NoEresElOwner // Codigo de error, ver enum Errores
         ); 
 
-        let libro = Libro { // Creacion de un struct tipo Libro
+        let articulo = Articulo { // Creacion de un struct tipo Articulo
             nombre,
-            paginas,
+            fecha,
+            lugar,
+            cantidad,
+            precio,
             disponible: true,
         };
 
-        context.accounts.biblioteca.libros.push(libro); // Agrega el Libro al vector de libros de Biblioteca
+        context.accounts.tienda.articulos.push(articulo); // Agrega el Articulo al vector de articulos de Tienda
 
         Ok(()) // Transaccion exitosa
     }
 
-    //////////////////////////// Instruccion: Eliminar Libro /////////////////////////////////////
+
+//READ
+    //////////////////////////// Instruccion: Ver Articulos /////////////////////////////////////
     /*
-    Elimina un libro apartir de su nombre. Error si libro no existe, Error si vector vacio. 
-
-    Parametros de entrada:
-        * nombre -> Nombre del libro -> string
-     */
-    pub fn eliminar_libro(context: Context<NuevoLibro>, nombre: String) -> Result<()> {
-        require!( // Medida de seguridad
-            context.accounts.biblioteca.owner == context.accounts.owner.key(),
-            Errores::NoEresElOwner
-        );
-
-        let libros = &mut context.accounts.biblioteca.libros; // Referencia mutable al vector de libros
-
-        for i in 0..libros.len() { // Se itera mediante el indice todo el contenido del vector en busca del libro a eliminar
-            if libros[i].nombre == nombre { // Si lo encuentra prodece a borrarlo mediante el metodo remove
-                libros.remove(i);
-                msg!("Libro {} eliminado!", nombre); // Mensaje de borrado exitoso
-                return Ok(()); // Transaccion exitosa
-            }
-        }
-        Err(Errores::LibroNoExiste.into()) // Transaccion fallida, nunca encontro el libro
-    }
-
-    //////////////////////////// Instruccion: Ver Libros /////////////////////////////////////
-    /*
-    Muestra en el log de la transaccion el contenido completo del vector de libros de la Biblioteca
+    Muestra en el log de la transaccion el contenido completo del vector de articulos de la Tienda
 
     Parametros de entrada:
         Ninguno
      */
-    pub fn ver_libros(context: Context<NuevoLibro>) -> Result<()> {
+    pub fn ver_articulos(context: Context<NuevoArticulo>) -> Result<()> {
         require!( // Medida de seguridad 
-            context.accounts.biblioteca.owner == context.accounts.owner.key(),
+            context.accounts.tienda.owner == context.accounts.owner.key(),
             Errores::NoEresElOwner
         );
+        
+        msg!("La tienda es: {}", context.accounts.tienda.nombre); // Print en log del nombre de la Tienda
 
-        // :#? requiere que NuevoLibro tenga atributo Debug. Permite la visualizacion completa del vector en el log
-        msg!("La lista de libros actualmente es: {:#?}", context.accounts.biblioteca.libros); // Print en log
+        // :#? requiere que NuevoArticulo tenga atributo Debug. Permite la visualizacion completa del vector en el log
+        msg!("La lista de articulos actualmente es: {:#?}", context.accounts.tienda.articulos); // Print en log
+
         Ok(()) // Transaccion exitosa 
     }
 
-    
+
+//UPDATE    
+
+
+    //////////////////////////// Instruccion: cambiar Fecha /////////////////////////////////////
+    /* 
+    Cambia la fecha registrada
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     */
+    pub fn cambiar_fecha(context: Context<NuevoArticulo>, nombre: String, fecha: String) -> Result<()> {
+        require!( // Medida de seguridad
+            context.accounts.tienda.owner == context.accounts.owner.key(),
+            Errores::NoEresElOwner
+        );
+
+        let articulos = &mut context.accounts.tienda.articulos; // Referencia mutable al vector de articulos
+        for i in 0..articulos.len() { // Se itera mediante el indice el vector de articulos
+
+            if articulos[i].nombre == nombre { // Si ecuentra el nombre del articulo procede a cambiar el valor 
+                articulos[i].fecha = fecha;
+                
+                msg!("El articulo: {} ahora tiene una nueva fecha", nombre); // log print del nuevo cambio
+                return Ok(()); // Transaccion exitosa
+            }
+        }
+
+        Err(Errores::ArticuloNoExiste.into()) // Transaccion fallida, articulo no existe
+    }
+
+
+ //////////////////////////// Instruccion: cambiar Lugar /////////////////////////////////////
+    /* 
+    Cambia el lugar registrado
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     */
+    pub fn cambiar_lugar(context: Context<NuevoArticulo>, nombre: String, lugar: String) -> Result<()> {
+        require!( // Medida de seguridad
+            context.accounts.tienda.owner == context.accounts.owner.key(),
+            Errores::NoEresElOwner
+        );
+
+        let articulos = &mut context.accounts.tienda.articulos; // Referencia mutable al vector de articulos
+        for i in 0..articulos.len() { // Se itera mediante el indice el vector de articulos
+
+            if articulos[i].nombre == nombre { // Si ecuentra el nombre del articulo procede a cambiar el valor 
+
+                articulos[i].lugar = lugar;
+                
+                msg!("El articulo: {} ahora tiene un cambio de lugar", nombre); // log print del nuevo cambio
+                return Ok(()); // Transaccion exitosa
+            }
+        }
+
+        Err(Errores::ArticuloNoExiste.into()) // Transaccion fallida, articulo no existe
+    }
+
+
+ //////////////////////////// Instruccion: cambiar cantidad /////////////////////////////////////
+    /* 
+    Cambia la cantidad del articulo seleccionado
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     */
+    pub fn cambiar_cantidad(context: Context<NuevoArticulo>, nombre: String, cantidad: u16) -> Result<()> {
+        require!( // Medida de seguridad
+            context.accounts.tienda.owner == context.accounts.owner.key(),
+            Errores::NoEresElOwner
+        );
+
+        let articulos = &mut context.accounts.tienda.articulos; // Referencia mutable al vector de articulos
+        for i in 0..articulos.len() { // Se itera mediante el indice el vector de articulos
+
+            if articulos[i].nombre == nombre { // Si ecuentra el nombre del articulo procede a cambiar el valor 
+
+                articulos[i].cantidad = cantidad;
+                
+                msg!("El articulo: {} cambió su número de existencias", nombre); // log print del nuevo cambio
+                return Ok(()); // Transaccion exitosa
+            }
+        }
+
+        Err(Errores::ArticuloNoExiste.into()) // Transaccion fallida, articulo no existe
+    }
+
+
+ //////////////////////////// Instruccion: cambiar precio /////////////////////////////////////
+    /* 
+    Cambia el precio del articulo seleccionado
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     */
+    pub fn cambiar_precio(context: Context<NuevoArticulo>, nombre: String, precio: u16) -> Result<()> {
+        require!( // Medida de seguridad
+            context.accounts.tienda.owner == context.accounts.owner.key(),
+            Errores::NoEresElOwner
+        );
+
+        let articulos = &mut context.accounts.tienda.articulos; // Referencia mutable al vector de articulos
+        for i in 0..articulos.len() { // Se itera mediante el indice el vector de articulos
+
+            if articulos[i].nombre == nombre { // Si ecuentra el nombre del articulo procede a cambiar el valor 
+
+                articulos[i].precio = precio;
+                
+                msg!("El articulo: {} cambió su precio", nombre); // log print del nuevo cambio
+                return Ok(()); // Transaccion exitosa
+            }
+        }
+
+        Err(Errores::ArticuloNoExiste.into()) // Transaccion fallida, articulo no existe
+    }
+
+
+
     //////////////////////////// Instruccion: Alternar Estado /////////////////////////////////////
     /* 
     Cambia el estado de disponible de false a true o de true a false.
 
     Parametros de entrada:
-        * nombre -> Nombre del libro -> string
+        * nombre -> Nombre del articulo -> string
      */
-    pub fn alternar_estado(context: Context<NuevoLibro>, nombre: String) -> Result<()> {
+    pub fn alternar_estado(context: Context<NuevoArticulo>, nombre: String) -> Result<()> {
         require!( // Medida de seguridad
-            context.accounts.biblioteca.owner == context.accounts.owner.key(),
+            context.accounts.tienda.owner == context.accounts.owner.key(),
             Errores::NoEresElOwner
         );
 
-        let libros = &mut context.accounts.biblioteca.libros; // Referencia mutable al vector de libros
-        for i in 0..libros.len() { // Se itera mediante el indice el vector de libros
-            let estado = libros[i].disponible;  // Se almacena el estado del vector actual
+        let articulos = &mut context.accounts.tienda.articulos; // Referencia mutable al vector de articulos
+        for i in 0..articulos.len() { // Se itera mediante el indice el vector de articulos
+            let estado = articulos[i].disponible;  // Se almacena el estado del vector actual
 
-            if libros[i].nombre == nombre { // Si ecuentra el nombre del libro procede a cambiar el valor del estado 
+            if articulos[i].nombre == nombre { // Si ecuentra el nombre del articulo procede a cambiar el valor del estado 
                 let nuevo_estado = !estado;
-                libros[i].disponible = nuevo_estado;
-                msg!("El libro: {} ahora tiene un valor de disponibilidad: {}", nombre, nuevo_estado); // log print de la nueva disponibilidad
+                articulos[i].disponible = nuevo_estado;
+                msg!("El articulo: {} ahora tiene un valor de disponibilidad: {}", nombre, nuevo_estado); // log print de la nueva disponibilidad
                 return Ok(()); // Transaccion exitosa
             }
         }
 
-        Err(Errores::LibroNoExiste.into()) // Transaccion fallida, libro no existe
+        Err(Errores::ArticuloNoExiste.into()) // Transaccion fallida, articulo no existe
+    }
+
+
+
+//DELETE
+    //////////////////////////// Instruccion: Eliminar Articulo /////////////////////////////////////
+
+    /*
+    Elimina un articulo apartir de su nombre. Error si articulo no existe, Error si vector vacio. 
+
+    Parametros de entrada:
+        * nombre -> Nombre del articulo -> string
+     */
+    pub fn eliminar_articulo(context: Context<NuevoArticulo>, nombre: String) -> Result<()> {
+        require!( // Medida de seguridad
+            context.accounts.tienda.owner == context.accounts.owner.key(),
+            Errores::NoEresElOwner
+        );
+
+        let articulos = &mut context.accounts.tienda.articulos; // Referencia mutable al vector de articulos
+
+        for i in 0..articulos.len() { // Se itera mediante el indice todo el contenido del vector en busca del articulo a eliminar
+            if articulos[i].nombre == nombre { // Si lo encuentra prodece a borrarlo mediante el metodo remove
+                articulos.remove(i);
+                msg!("Articulo {} eliminado!", nombre); // Mensaje de borrado exitoso
+                return Ok(()); // Transaccion exitosa
+            }
+        }
+        Err(Errores::ArticuloNoExiste.into()) // Transaccion fallida, nunca encontro el articulo
     }
 
 }
 
+
+
+//ERRORES_______________________________________________________________________________
 /*
 Codigos de error
 Todos los codigos se almacenan en un enum con la siguiente estructura:
@@ -149,22 +286,22 @@ NombreDelError, (En camel case)
 */
 #[error_code]
 pub enum Errores {
-    #[msg("Error, no eres el propietario de la biblioteca que deseas modificar")]
+    #[msg("Error, no eres el propietario de la tienda que deseas modificar")]
     NoEresElOwner,
-    #[msg("Error, el libro con el que deseas interactuar no existe")]
-    LibroNoExiste,
+    #[msg("Error, el articulo con el que deseas interactuar no existe")]
+    ArticuloNoExiste,
 }
 
-#[account] // Especifica que el strcut es una cuenta que se almacenara en la blockchain
+//STRUCT_______________________________________________________________________________
+#[account] // Especifica que el struct es una cuenta que se almacenara en la blockchain
 #[derive(InitSpace)] // Genera la constante INIT_SPACE y determina el espacio de almacenamiento necesario 
-pub struct Biblioteca { // Define la Biblioteca
+pub struct Tienda { // Define la Tienda
     owner: Pubkey, // Pubkey es un formato de llave publica de 32 bytes 
 
     #[max_len(60)] // Cantidad maxima de caracteres del string: nombre
     nombre: String,
-
-    #[max_len(10)] // Tamaño maximo del vector libros 
-    libros: Vec<Libro>,
+    #[max_len(10)] // Tamaño maximo del vector articulos 
+    articulos: Vec<Articulo>,
 }
 
 /*
@@ -177,41 +314,47 @@ Struct interno o secundario (No es una cuenta). Se define por derive y cuenta co
     * Debug -> Para mostrarlo en log con ":?" o ":#?"
 */
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace, PartialEq, Debug)]
-pub struct Libro {
-    #[max_len(60)]
+pub struct Articulo {
+    
+    #[max_len(60)]  // Cantidad maxima de caracteres del string: nombre
     nombre: String,
-
+     #[max_len(10)] // Cantidad maxima de caracteres del string: fecha
+    fecha: String,
+    #[max_len(60)]  // Cantidad maxima de caracteres del string: lugar
+    lugar: String,
+    
     // Los siguientes datos no rquieren de max_len porque ya estan definidos (numero de 16 bits y false o true)
-    paginas: u16, 
-
+    cantidad: u16, 
+    precio: u16,
     disponible: bool,
 }
 
-
+//CONTEXT_______________________________________________________________________________
 // Creacion de los contextos para las instrucciones (funciones)
 #[derive(Accounts)] // Especifica que este struct describe las cuentas que se requieren para determinada instruccion
-pub struct NuevaBiblioteca<'info> { // contexto de la instruccion
+pub struct NuevaTienda<'info> { // contexto de la instruccion
     #[account(mut)] 
     pub owner: Signer<'info>, // Se define que el owner como el que pagara la transaccion, por eso es mut, para que cambie el balance de la cuenta
 
+    //PDA
     #[account(
-        init, // Inidica que al llamar la instruccuion se creara una cuenta
+        init, // Indica que al llamar la instruccion se creara una cuenta
         // puede ser remplazado por "init_if_needed" para que solo se cree una vez por caller
         payer = owner, // Se especifica que quien paga el llamado a la instruccion, en este caso llama la instruccion 
-        space = Biblioteca::INIT_SPACE + 8, // Se calcula el espacio requerido para almacenar el Solana Program On-Chain
-        seeds = [b"biblioteca", owner.key().as_ref()], // Se especifica que la cuenta es una PDA que depende de un string y el id del owner
-        bump // Metodo para determinar el el id de la biblioteca en base a lo anterior 
+        space = Tienda::INIT_SPACE + 8, // Se calcula el espacio requerido para almacenar el Solana Program On-Chain
+        seeds = [b"tienda", owner.key().as_ref()], // Se especifica que la cuenta es una PDA que depende de un string y el id del owner
+        bump // Metodo para determinar el el id de la tienda en base a lo anterior 
     )]
-    pub biblioteca: Account<'info, Biblioteca>, // Se especifica que la cuenta creada (PDA) almacenara la biblioteca 
+    pub tienda: Account<'info, Tienda>, // Se especifica que la cuenta creada (PDA) almacenara la tienda 
 
     pub system_program: Program<'info, System>, // Programa necesario para crear la cuenta 
 }
 
-// Contexto para la creacion y modificacion de libros 
-#[derive(Accounts)] // Especifica que este struct se requiere para todas las instrucciones relacionadas con la creacion o modificacion de Libro
-pub struct NuevoLibro<'info> {
+// Contexto para la creacion y modificacion de articulos 
+#[derive(Accounts)] // Especifica que este struct se requiere para todas las instrucciones relacionadas con la creacion o modificacion de Articulo
+pub struct NuevoArticulo<'info> {
     pub owner: Signer<'info>, // El owner de la cuenta es quien paga la transaccion
 
     #[account(mut)] 
-    pub biblioteca: Account<'info, Biblioteca>, // Se marca biblioteca como mutable porque se modificara tanto el vector como los libros que contiene
+    pub tienda: Account<'info, Tienda>, // Se marca tienda como mutable porque se modificara tanto el vector como los articulos que contiene
 }
