@@ -155,44 +155,43 @@ Especifica que este struct se requiere para todas las instrucciones relacionadas
 TOTAL gastado: 7.267606 SOL
 ----------------------
 
-## RESULTADO
+# RESULTADO
 
 ![Tienda](./images/programav2_CadenaSuministro-Tienda.png)
 
-# Instrucción: crear Tienda
+## Instrucción: crear Tienda
 
 ![Tienda](./images/programa_v2_crearTienda.png)
 
-# Instruccion: agregar Articulo
+## Instruccion: agregar Articulo
 
 ![Tienda](./images/programa_v2_agregarArticulo.png)
 
-# Instruccion: ver Articulos
+## Instruccion: ver Articulos
 
 ![Tienda](./images/programa_v2_verArticulos1.png)
 ![Tienda](./images/programa_v2_verArticulos2.png)
 
-# Instruccion: cambiar Fecha
+## Instruccion: cambiar Fecha
 
 ![Tienda](./images/programa_v2_cambiarFecha.png)
 ![Tienda](./images/programa_v2_verArticulo2_cambiodefecha.png)
 
-# Instruccion: cambiar Lugar
+## Instruccion: cambiar Lugar
 
 ![Tienda](./images/programa_v2_cambiarLugar1.png)
 ![Tienda](./images/programa_v2_verArticulos1b.png)
  
-# Instruccion: cambiar cantidad
+## Instruccion: cambiar cantidad
 
 ![Tienda](./images/programa_v2_cambiarCantidad2.png)
 ![Tienda](./images/programa_v2_verArticulos2b.png)
 
-# Instruccion: cambiar precio
+## Instruccion: cambiar precio
     
-![Tienda](./images/programa_v2_cambiarPrecio_alternarEstado.png)
 ![Tienda](./images/programa_v2_verArticulos2c.png)
 
-# Instruccion: eliminar Articulo
+## Instruccion: eliminar Articulo
 
 ![Tienda](./images/programa_v2_eliminarArticulo.png)
 ![Tienda](./images/programa_v2_verArticulos1c.png)
