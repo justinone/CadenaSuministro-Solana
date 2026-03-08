@@ -6,12 +6,12 @@ Nombre: Cadena de Sumnistro V1.0
 Objetivo: Inventario de seguimiento para tiendas
 
 Requisitos:
-    1. Código en rust con estructura CRUD + PDA
-    2. Repositorio público en Git
-    3. Documentación: README.md y comentarios en el código
-    
+1. Código en rust con estructura CRUD + PDA
 
-README
+2. Repositorio público en Git
+   
+3. Documentación: README y comentarios en el código
+    
 
 ---------------Estructura CRUD----------------------------------------------------------------------------------------
 
