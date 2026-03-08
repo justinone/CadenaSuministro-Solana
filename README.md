@@ -3,7 +3,7 @@ PROYECTO PARA CERTIFICACIÓN
 
 Nombre: Cadena de Sumnistro V1.0
 
-Objetivo: Inventario simple para tiendas
+Objetivo: Inventario de seguimiento para tiendas
 
 Requisitos:
     1. Código en rust con estructura CRUD + PDA
